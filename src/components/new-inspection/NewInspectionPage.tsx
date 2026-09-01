@@ -9,13 +9,14 @@ import { ProductIdentificationLoading } from './ProductIdentificationLoading';
 import { ProductIdentified } from './ProductIdentified';
 import { PackageCapture } from './PackageCapture';
 import { PackageAnalysis } from './PackageAnalysis';
+import { PackageValidation } from './PackageValidation';
 import { STORED_DEMO_PRODUCT, type ProductRecord } from '../../data/productData';
 
 interface NewInspectionPageProps {
   onBackToHome: () => void;
 }
 
-type StepState = 'identify' | 'scanner' | 'manual' | 'loading' | 'identified' | 'capture' | 'analysis';
+type StepState = 'identify' | 'scanner' | 'manual' | 'loading' | 'identified' | 'capture' | 'analysis' | 'validate';
 
 export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHome }) => {
   const [step, setStep] = useState<StepState>('identify');
@@ -36,6 +37,8 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
       setStep('identified');
     } else if (step === 'analysis') {
       setStep('capture');
+    } else if (step === 'validate') {
+      setStep('analysis');
     }
   };
 
@@ -44,18 +47,20 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
     setStep('loading');
   };
 
-  const handleManualSuccess = () => {
-    setResolvedProduct(STORED_DEMO_PRODUCT);
+  const handleManualSuccess = (product: ProductRecord) => {
+    setResolvedProduct(product);
     setStep('loading');
   };
 
   const getStepNumber = (): number => {
+    if (step === 'validate') return 4;
     if (step === 'analysis') return 3;
     if (step === 'capture') return 2;
     return 1;
   };
 
   const getSubTitle = (): string => {
+    if (step === 'validate') return 'Step 04 · Validate package declarations';
     if (step === 'analysis') return 'Step 03 · Analyze package declarations';
     if (step === 'capture') return 'Step 02 · Capture package images';
     if (step === 'loading') return 'Matching product information against catalog';
@@ -63,21 +68,22 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
   };
 
   return (
-    <div className="new-insp-viewport">
-      {/* Top Standard Header */}
-      <header className="new-insp-topbar">
-        <button
-          type="button"
-          className="new-insp-nav-btn"
-          onClick={handleBack}
-          aria-label="Go back"
-        >
-          <ArrowLeft className="w-5 h-5 text-[#202124]" />
-        </button>
-
-        <div className="new-insp-title-box">
-          <h1 className="new-insp-screen-title">New inspection</h1>
-          <span className="new-insp-screen-sub">{getSubTitle()}</span>
+    <div className="new-insp-page-root">
+      {/* Top App Header */}
+      <header className="new-insp-top-bar">
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            type="button"
+            className="new-insp-nav-btn"
+            onClick={handleBack}
+            aria-label="Back"
+          >
+            <ArrowLeft className="w-5 h-5 text-[#202124]" />
+          </button>
+          <div className="min-w-0">
+            <h1 className="new-insp-bar-title">New inspection</h1>
+            <p className="new-insp-bar-subtitle truncate">{getSubTitle()}</p>
+          </div>
         </div>
 
         <button
@@ -95,7 +101,7 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
 
       {/* Main Screen Content Viewport */}
       <main className="new-insp-main-scroll">
-        <div className={`new-insp-center-container ${step === 'identified' || step === 'analysis' ? 'new-insp-center-container--wide' : ''}`}>
+        <div className={`new-insp-center-container ${step === 'identified' || step === 'analysis' || step === 'validate' ? 'new-insp-center-container--wide' : ''}`}>
           {step === 'identify' && (
             <ProductIdentification
               onScanClick={() => setStep('scanner')}
@@ -155,8 +161,20 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
               leftImage={leftImage}
               rightImage={rightImage}
               onBackToCapture={() => setStep('capture')}
-              onContinueToValidation={() => {
-                // Validation stage is the next upcoming milestone
+              onContinueToValidation={() => setStep('validate')}
+            />
+          )}
+
+          {step === 'validate' && (
+            <PackageValidation
+              product={resolvedProduct}
+              frontImage={frontImage}
+              backImage={backImage}
+              leftImage={leftImage}
+              rightImage={rightImage}
+              onBackToAnalysis={() => setStep('analysis')}
+              onContinueToReport={() => {
+                // Step 05 Report will be built in the next milestone
               }}
             />
           )}

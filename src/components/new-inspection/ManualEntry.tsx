@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Barcode, ArrowRight } from 'lucide-react';
+import { resolveProductByCode, type ProductRecord } from '../../data/productData';
 
 interface ManualEntryProps {
-  onSubmitSuccess: () => void;
+  onSubmitSuccess: (product: ProductRecord) => void;
   onBackToScanner: () => void;
 }
 
@@ -18,13 +19,18 @@ export const ManualEntry: React.FC<ManualEntryProps> = ({
     if (!barcodeInput.trim()) return;
 
     setIsSubmitting(true);
+    const resolved = resolveProductByCode(barcodeInput);
     setTimeout(() => {
-      onSubmitSuccess();
+      onSubmitSuccess(resolved);
     }, 500);
   };
 
-  const handleFillDemo = () => {
+  const handleFillLays = () => {
     setBarcodeInput('8901491101844');
+  };
+
+  const handleFillFreshBite = () => {
+    setBarcodeInput('8901234567890');
   };
 
   return (
@@ -47,7 +53,7 @@ export const ManualEntry: React.FC<ManualEntryProps> = ({
               id="manual-gtin"
               type="text"
               className="new-insp-text-input"
-              placeholder="e.g. 8901491101844"
+              placeholder="e.g. 8901491101844 or 8901234567890"
               value={barcodeInput}
               onChange={(e) => setBarcodeInput(e.target.value)}
               autoFocus
@@ -55,16 +61,28 @@ export const ManualEntry: React.FC<ManualEntryProps> = ({
           </div>
         </div>
 
-        {/* Demo Helper */}
-        <div className="flex items-center justify-between text-[12px] pt-1">
-          <span className="text-[#5F6368]">Demo product code:</span>
-          <button
-            type="button"
-            className="text-[#1A73E8] font-semibold hover:underline"
-            onClick={handleFillDemo}
-          >
-            Fill Lay's GTIN (8901491101844)
-          </button>
+        {/* Demo Helper Links */}
+        <div className="flex flex-col gap-1.5 text-[12px] pt-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[#5F6368]">Demo scenario A:</span>
+            <button
+              type="button"
+              className="text-[#1A73E8] font-semibold hover:underline"
+              onClick={handleFillLays}
+            >
+              Lay's GTIN (8901491101844)
+            </button>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-[#5F6368]">Demo scenario B:</span>
+            <button
+              type="button"
+              className="text-[#1A73E8] font-semibold hover:underline"
+              onClick={handleFillFreshBite}
+            >
+              FreshBite GTIN (8901234567890)
+            </button>
+          </div>
         </div>
 
         <div className="pt-4 flex flex-col gap-3">
