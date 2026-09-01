@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Minimal Institutional Shield -->
+  <path d="M50 10 L82 24 V50 C82 70 50 88 50 88 C50 88 18 70 18 50 V24 L50 10 Z" fill="#0F172A" />
+  
+  <!-- Subtle Internal Geometry (Balance + Rule Check) -->
+  <path d="M50 26 V62" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M34 38 H66" stroke="#38BDF8" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Balanced Measurement Notches -->
+  <path d="M34 38 L28 48 M34 38 L40 48" stroke="#38BDF8" stroke-width="2"/>
+  <path d="M26 48 H42" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  
+  <path d="M66 38 L60 48 M66 38 L72 48" stroke="#38BDF8" stroke-width="2"/>
+  <path d="M58 48 H74" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  
+  <circle cx="50" cy="68" r="3" fill="#38BDF8" />
+</svg>
