@@ -4,10 +4,11 @@ import { LoginPage } from './components/auth/LoginPage';
 import { SignUpPage } from './components/auth/SignUpPage';
 import { AuthTransition } from './components/auth/AuthTransition';
 import { InspectorDashboard } from './components/dashboard/InspectorDashboard';
+import { NewInspectionPage } from './components/new-inspection/NewInspectionPage';
 import { loadSession, clearSession } from './auth/authStore';
 import type { InspectorUser } from './auth/authStore';
 
-type AppView = 'landing' | 'login' | 'signup' | 'auth_transition' | 'dashboard';
+type AppView = 'landing' | 'login' | 'signup' | 'auth_transition' | 'dashboard' | 'new_inspection';
 
 export function App() {
   const [currentView, setCurrentView] = useState<AppView>('landing');
@@ -77,6 +78,13 @@ export function App() {
         <InspectorDashboard
           user={currentUser}
           onLogout={handleLogout}
+          onStartNewInspection={() => setCurrentView('new_inspection')}
+        />
+      )}
+
+      {currentView === 'new_inspection' && (
+        <NewInspectionPage
+          onBackToHome={() => setCurrentView('dashboard')}
         />
       )}
     </div>

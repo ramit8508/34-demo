@@ -18,6 +18,7 @@ import type { InspectorUser } from '../../auth/authStore';
 interface InspectorDashboardProps {
   user: InspectorUser;
   onLogout: () => void;
+  onStartNewInspection?: () => void;
 }
 
 type InspectionStatus = 'compliant' | 'non-compliant' | 'review';
@@ -113,7 +114,11 @@ function getStatusLabel(s: InspectionStatus): string {
 }
 
 // ─── Component ───────────────────────────────────────────────
-export const InspectorDashboard: React.FC<InspectorDashboardProps> = ({ user, onLogout }) => {
+export const InspectorDashboard: React.FC<InspectorDashboardProps> = ({
+  user,
+  onLogout,
+  onStartNewInspection,
+}) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [activeNav, setActiveNav] = useState<'home' | 'inspections' | 'reports' | 'profile'>('home');
 
@@ -201,7 +206,7 @@ export const InspectorDashboard: React.FC<InspectorDashboardProps> = ({ user, on
             <p className="dash-cta-desc">
               Scan the product barcode and capture package labels for compliance analysis.
             </p>
-            <button className="dash-cta-btn">
+            <button className="dash-cta-btn" onClick={onStartNewInspection}>
               <Plus />
               Start New Inspection
             </button>
@@ -259,7 +264,7 @@ export const InspectorDashboard: React.FC<InspectorDashboardProps> = ({ user, on
           {/* ── Quick Actions ─────────────────────────────────── */}
           <h3 className="dash-section-title">Quick actions</h3>
           <div className="dash-actions">
-            <button className="dash-action-btn">
+            <button className="dash-action-btn" onClick={onStartNewInspection}>
               <div className="dash-action-icon dash-action-icon--blue">
                 <ScanLine />
               </div>
