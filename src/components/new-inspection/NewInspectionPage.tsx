@@ -8,7 +8,7 @@ import { ManualEntry } from './ManualEntry';
 import { ProductIdentificationLoading } from './ProductIdentificationLoading';
 import { ProductIdentified } from './ProductIdentified';
 import { PackageCapture } from './PackageCapture';
-import { PackageAnalysisReady } from './PackageAnalysisReady';
+import { PackageAnalysis } from './PackageAnalysis';
 import { STORED_DEMO_PRODUCT, type ProductRecord } from '../../data/productData';
 
 interface NewInspectionPageProps {
@@ -56,29 +56,28 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
   };
 
   const getSubTitle = (): string => {
-    if (step === 'analysis') return 'Step 03 · Review observed package evidence';
+    if (step === 'analysis') return 'Step 03 · Analyze package declarations';
     if (step === 'capture') return 'Step 02 · Capture package images';
     if (step === 'loading') return 'Matching product information against catalog';
     return 'Start by identifying the packaged commodity.';
   };
 
   return (
-    <div className="new-insp-page-root">
-      {/* Top App Header */}
-      <header className="new-insp-top-bar">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            className="new-insp-nav-btn"
-            onClick={handleBack}
-            aria-label="Back"
-          >
-            <ArrowLeft className="w-5 h-5 text-[#3C4043]" />
-          </button>
-          <div>
-            <h1 className="new-insp-bar-title">New inspection</h1>
-            <p className="new-insp-bar-subtitle">{getSubTitle()}</p>
-          </div>
+    <div className="new-insp-viewport">
+      {/* Top Standard Header */}
+      <header className="new-insp-topbar">
+        <button
+          type="button"
+          className="new-insp-nav-btn"
+          onClick={handleBack}
+          aria-label="Go back"
+        >
+          <ArrowLeft className="w-5 h-5 text-[#202124]" />
+        </button>
+
+        <div className="new-insp-title-box">
+          <h1 className="new-insp-screen-title">New inspection</h1>
+          <span className="new-insp-screen-sub">{getSubTitle()}</span>
         </div>
 
         <button
@@ -96,7 +95,7 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
 
       {/* Main Screen Content Viewport */}
       <main className="new-insp-main-scroll">
-        <div className={`new-insp-center-container ${step === 'identified' ? 'new-insp-center-container--wide' : ''}`}>
+        <div className={`new-insp-center-container ${step === 'identified' || step === 'analysis' ? 'new-insp-center-container--wide' : ''}`}>
           {step === 'identify' && (
             <ProductIdentification
               onScanClick={() => setStep('scanner')}
@@ -149,14 +148,16 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
           )}
 
           {step === 'analysis' && (
-            <PackageAnalysisReady
+            <PackageAnalysis
               product={resolvedProduct}
               frontImage={frontImage}
               backImage={backImage}
               leftImage={leftImage}
               rightImage={rightImage}
               onBackToCapture={() => setStep('capture')}
-              onReturnToDashboard={onBackToHome}
+              onContinueToValidation={() => {
+                // Validation stage is the next upcoming milestone
+              }}
             />
           )}
         </div>
