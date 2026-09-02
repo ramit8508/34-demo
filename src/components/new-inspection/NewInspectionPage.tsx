@@ -10,13 +10,14 @@ import { ProductIdentified } from './ProductIdentified';
 import { PackageCapture } from './PackageCapture';
 import { PackageAnalysis } from './PackageAnalysis';
 import { PackageValidation } from './PackageValidation';
+import { InspectionReport } from './InspectionReport';
 import { STORED_DEMO_PRODUCT, type ProductRecord } from '../../data/productData';
 
 interface NewInspectionPageProps {
   onBackToHome: () => void;
 }
 
-type StepState = 'identify' | 'scanner' | 'manual' | 'loading' | 'identified' | 'capture' | 'analysis' | 'validate';
+type StepState = 'identify' | 'scanner' | 'manual' | 'loading' | 'identified' | 'capture' | 'analysis' | 'validate' | 'report';
 
 export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHome }) => {
   const [step, setStep] = useState<StepState>('identify');
@@ -39,6 +40,8 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
       setStep('capture');
     } else if (step === 'validate') {
       setStep('analysis');
+    } else if (step === 'report') {
+      setStep('validate');
     }
   };
 
@@ -53,6 +56,7 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
   };
 
   const getStepNumber = (): number => {
+    if (step === 'report') return 5;
     if (step === 'validate') return 4;
     if (step === 'analysis') return 3;
     if (step === 'capture') return 2;
@@ -60,6 +64,7 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
   };
 
   const getSubTitle = (): string => {
+    if (step === 'report') return 'Step 05 · Legal Metrology Inspection Report';
     if (step === 'validate') return 'Step 04 · Validate package declarations';
     if (step === 'analysis') return 'Step 03 · Analyze package declarations';
     if (step === 'capture') return 'Step 02 · Capture package images';
@@ -101,7 +106,7 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
 
       {/* Main Screen Content Viewport */}
       <main className="new-insp-main-scroll">
-        <div className={`new-insp-center-container ${step === 'identified' || step === 'analysis' || step === 'validate' ? 'new-insp-center-container--wide' : ''}`}>
+        <div className={`new-insp-center-container ${step === 'identified' || step === 'analysis' || step === 'validate' || step === 'report' ? 'new-insp-center-container--wide' : ''}`}>
           {step === 'identify' && (
             <ProductIdentification
               onScanClick={() => setStep('scanner')}
@@ -173,9 +178,19 @@ export const NewInspectionPage: React.FC<NewInspectionPageProps> = ({ onBackToHo
               leftImage={leftImage}
               rightImage={rightImage}
               onBackToAnalysis={() => setStep('analysis')}
-              onContinueToReport={() => {
-                // Step 05 Report will be built in the next milestone
-              }}
+              onContinueToReport={() => setStep('report')}
+            />
+          )}
+
+          {step === 'report' && (
+            <InspectionReport
+              product={resolvedProduct}
+              frontImage={frontImage}
+              backImage={backImage}
+              leftImage={leftImage}
+              rightImage={rightImage}
+              onBackToValidation={() => setStep('validate')}
+              onDoneToDashboard={onBackToHome}
             />
           )}
         </div>
